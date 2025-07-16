@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Swipe Test - EPUB.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+        #viewer { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="viewer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+    <script>
+        const script = document.createElement('script');
+        script.src = `dist/epub.min.js?v=${new Date().getTime()}`;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+            console.log("EPUB.js script loaded.");
+
+            const book = ePub('test/fixtures/alice.epub');
+            const rendition = book.renderTo("viewer", {
+                width: "100%",
+                height: "100%",
+                manager: "default",
+                flow: "paginated",
+                allowScriptedContent: true 
+            });
+            rendition.display();
+
+            rendition.on("rendered", (section, view) => {
+                console.log("Section rendered. Attaching listeners...");
+                const iframe = view.iframe;
+                if (!iframe) {
+                    console.error("Could not find the book's iframe.");
+                    return;
+                }
+                
+                // --- THE CRITICAL CHANGE: Attach to contentWindow ---
+                const target = iframe.contentWindow;
+                if (!target) {
+                    console.error("Could not find iframe's contentWindow.");
+                    return;
+                }
+                
+                console.log("Successfully found contentWindow, attaching event listeners now.");
+
+                if (target.listenersAttached) {
+                    return;
+                }
+                target.listenersAttached = true;
+
+                let touchStartX = 0;
+                let mouseStartX = 0;
+                let isMouseDown = false;
+                const SWIPE_THRESHOLD = 50;
+
+                target.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].clientX;
+                }, { passive: true });
+
+                target.addEventListener('touchend', (e) => {
+                    const deltaX = e.changedTouches[0].clientX - touchStartX;
+                    if (Math.abs(deltaX) < SWIPE_THRESHOLD) return;
+                    
+                    if (deltaX > 0) {
+                        console.log("MANUAL SWIPE (TOUCH): right");
+                        rendition.prev();
+                    } else {
+                        console.log("MANUAL SWIPE (TOUCH): left");
+                        rendition.next();
+                    }
+                }, { passive: true });
+
+                target.addEventListener('mousedown', (e) => {
+                    isMouseDown = true;
+                    mouseStartX = e.clientX;
+                }, { passive: true });
+
+                target.addEventListener('mouseup', (e) => {
+                    if (!isMouseDown) return;
+                    isMouseDown = false;
+                    const deltaX = e.clientX - mouseStartX;
+                    if (Math.abs(deltaX) < SWIPE_THRESHOLD) return;
+                    
+                    if (deltaX > 0) {
+                        console.log("MANUAL SWIPE (MOUSE): right");
+                        rendition.prev();
+                    } else {
+                        console.log("MANUAL SWIPE (MOUSE): left");
+                        rendition.next();
+                    }
+                }, { passive: true });
+            });
+
+            window.rendition = rendition;
+        };
+    </script>
+</body>
+</html>

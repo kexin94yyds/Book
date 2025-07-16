@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "EPUB 阅读器",
+  "version": "1.0",
+  "description": "一个可以直接导入 EPUB 文件阅读的 Chrome 插件。",
+  "icons": {
+    "128": "icon.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "file:///*"
+  ],
+  "action": {
+    "default_title": "打开 EPUB 阅读器",
+    "default_popup": "reader.html"
+  }
+} 
