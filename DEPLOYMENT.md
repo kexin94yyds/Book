@@ -5,13 +5,13 @@
 This project requires Node.js version 18.x for successful builds. The error you encountered is due to Node.js v22.17.1 having incompatible hash algorithms.
 
 ### Required Versions:
-- **Node.js**: 18.19.0 (recommended) or any 18.x version
+- **Node.js**: 18.17.0 (recommended) or any 18.x version
 - **npm**: 9.8.1 or compatible version
 
 ### For Netlify Deployment:
 
 The `netlify.toml` file is already configured with:
-- Node.js version: 18.19.0
+- Node.js version: 18.17.0
 - Build command: npm run build
 - Publish directory: dist
 
@@ -24,7 +24,7 @@ Create a `vercel.json` file in your project root:
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/node@18.19.0"
+      "use": "@vercel/node@18.17.0"
     }
   ]
 }

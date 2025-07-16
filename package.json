@@ -3,8 +3,8 @@
   "version": "0.3.93",
   "description": "Parse and Render Epubs",
   "engines": {
-    "node": ">=16.0.0 <19.0.0",
-    "npm": ">=8.0.0"
+    "node": ">=16.0.0 <=18.16.0",
+    "npm": ">=8.0.0 <=9.6.7"
   },
   "main": "lib/index.js",
   "module": "src/index.js",
