@@ -41,15 +41,18 @@ module.exports = {
 		"jszip/dist/jszip": "JSZip",
 		"xmldom": "xmldom"
 	},
-	plugins: [],
+	plugins: [
+		new webpack.ProvidePlugin({
+			Buffer: ['buffer', 'Buffer'],
+			process: 'process/browser'
+		})
+	],
 	resolve: {
 		alias: {
-			path: "path-webpack"
-		},
-		fallback: {
-			crypto: require.resolve("crypto-browserify"),
-			stream: require.resolve("stream-browserify"),
-			buffer: require.resolve("buffer")
+			path: "path-webpack",
+			crypto: "crypto-browserify",
+			stream: "stream-browserify",
+			buffer: "buffer"
 		}
 	},
 	devServer: {
